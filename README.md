@@ -20,3 +20,17 @@ This project is a mobile application that serves as an AI-powered assistant for 
 - **Frontend:** React Native
 - **Backend:** Python (with Flask/Django), and a natural language processing library (e.g., spaCy, NLTK, or a transformer-based model).
 - **Database:** TBD
+
+## Logging & Health Checks
+
+### Development
+
+- Start the backend with `python backend.py`.
+- Logs are emitted as JSON to the console and saved to `backend.log`. View them with `tail -f backend.log`.
+- Check service health with `curl http://localhost:5000/health`.
+
+### Production
+
+- Run the server with `gunicorn backend:app`.
+- Logs continue to stream in JSON format to stdout and `backend.log`.
+- Health checks are available at `GET /health` on the deployed host.

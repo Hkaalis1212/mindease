@@ -25,5 +25,12 @@ class BackendTestCase(unittest.TestCase):
         data = json.loads(response.data)
         self.assertIn('entries', data)
 
+    def test_health_check(self):
+        # Test health check endpoint
+        response = self.app.get('/health')
+        self.assertEqual(response.status_code, 200)
+        data = json.loads(response.data)
+        self.assertEqual(data['status'], 'ok')
+
 if __name__ == '__main__':
     unittest.main()

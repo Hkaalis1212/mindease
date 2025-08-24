@@ -1,0 +1,4 @@
+node_modules/
+backend.log
+__pycache__/
+*.pyc

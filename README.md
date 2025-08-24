@@ -1,6 +1,6 @@
 # AI Employee for Therapists
 
-This project is a mobile application that serves as an AI-powered assistant for therapists and their patients. The application provides a chatbot interface for various tasks, including appointment scheduling, session note-taking, session summaries, billing/payments, and AI-assisted journaling.
+This project is a mobile application that serves as an AI-powered assistant for therapists and their patients. It provides a chatbot interface for various tasks, including appointment scheduling, session note-taking, session summaries, billing and payments, and AI-assisted journaling.
 
 ## Project Structure
 

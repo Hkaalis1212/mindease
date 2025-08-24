@@ -1,10 +1,20 @@
 from flask import Flask, request, jsonify
 import os
+import sqlite3
 
 app = Flask(__name__)
 
-# In-memory storage for journal entries (for demonstration purposes)
-journal_entries = []
+# Initialize SQLite database connection and create table
+try:
+    conn = sqlite3.connect('journal.db', check_same_thread=False)
+    conn.execute(
+        'CREATE TABLE IF NOT EXISTS journal_entries ('
+        'id INTEGER PRIMARY KEY AUTOINCREMENT, '
+        'entry TEXT NOT NULL)'
+    )
+    conn.commit()
+except sqlite3.Error:
+    conn = None
 
 @app.route('/journal', methods=['POST'])
 def add_journal_entry():
@@ -23,9 +33,15 @@ def add_journal_entry():
         return jsonify({'error': 'Invalid request body'}), 400
 
     entry = data['entry']
-    journal_entries.append(entry)
-    # In a real application, you would perform AI analysis on the entry here
-    return jsonify({'message': 'Journal entry added successfully'}), 201
+    try:
+        if conn is None:
+            raise sqlite3.Error('Database connection not available')
+        conn.execute('INSERT INTO journal_entries (entry) VALUES (?)', (entry,))
+        conn.commit()
+        # In a real application, you would perform AI analysis on the entry here
+        return jsonify({'message': 'Journal entry added successfully'}), 201
+    except sqlite3.Error:
+        return jsonify({'error': 'Database error'}), 500
 
 @app.route('/journal', methods=['GET'])
 def get_journal_entries():
@@ -35,7 +51,14 @@ def get_journal_entries():
     Returns:
         A JSON response with a list of all journal entries.
     """
-    return jsonify({'entries': journal_entries})
+    try:
+        if conn is None:
+            raise sqlite3.Error('Database connection not available')
+        cursor = conn.execute('SELECT entry FROM journal_entries')
+        entries = [row[0] for row in cursor.fetchall()]
+        return jsonify({'entries': entries})
+    except sqlite3.Error:
+        return jsonify({'error': 'Database error'}), 500
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
